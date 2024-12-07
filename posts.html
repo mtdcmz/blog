@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTDCMZ's Blog</title>
-    <link rel="icon" href="favicon.jpg" sizes="16x16" type="image/jpg">
-    <style>
+    <title>文章导航 - MTDCMZ's Blog</title>
+    <link rel="icon" href="https://mtdcmz.github.io/blog/favicon.jpg" sizes="16x16" type="image/jpg">
+<style>
         :root {
             --primary-purple: #8B5CF6;
             --dark-purple: #6D28D9;
             --light-purple: #A78BFA;
+            --bg-color: rgba(0, 0, 0, 0.7);
+            --card-bg-color: rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -112,10 +114,11 @@
             height: 20px;
         }
 
-        /* GitHub icon specific style to make it white */
         .github-icon {
             filter: brightness(0) invert(1);
         }
+
+
 
         /* Main Content */
         main {
@@ -128,8 +131,8 @@
             text-align: center;
         }
 
-        .poetry {
-            font-size: 2rem;
+        .post-content {
+            font-size: 1.5rem;
             margin-bottom: 2rem;
             padding: 1rem;
             background: rgba(0, 0, 0, 0.6);
@@ -140,21 +143,74 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        .get-more {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            background-color: var(--primary-purple);
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+
+        .post-list {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: var(--bg-color);
+            border-radius: 8px;
+            max-width: 900px;
+            animation: fadeIn 1s ease;
+            line-height: 1.8;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
         }
 
-        .get-more:hover {
+        .post-item {
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            display: block;
+            margin-bottom: 1.5rem;
+            background: var(--card-bg-color);
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .post-item:hover {
+            background-color: var(--primary-purple);
+        }
+
+        .post-item .post-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .post-item .post-meta {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Search Box */
+        .search-box {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 4px;
+            width: 300px;
+            margin-right: 1rem;
+            background-color: var(--card-bg-color);
+            color: white;
+        }
+
+        .search-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-purple);
+            border: none;
+            color: white;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
             background-color: var(--dark-purple);
-            transform: translateX(5px);
         }
 
         /* Footer */
@@ -208,7 +264,7 @@
             .dropdown.active .dropdown-content {
                 display: block;
             }
-            .poetry {
+            .post-content {
                 font-size: 1.2rem;
                 padding: 1rem;
                 margin-bottom: 1.5rem;
@@ -221,10 +277,6 @@
                 padding: 0.5rem;
                 font-size: 0.9rem;
             }
-            .get-more {
-                font-size: 0.9rem;
-                padding: 0.6rem 1.2rem;
-            }
             footer {
                 font-size: 0.8rem;
             }
@@ -232,9 +284,8 @@
                 font-size: 0.9rem;
             }
         }
-
         /* Smooth Transitions */
-        .nav-item, .dropdown-content, .poetry, .get-more {
+        .nav-item, .dropdown-content, .post-content {
             transition: all 0.3s ease;
         }
 
@@ -243,9 +294,6 @@
             .nav-item:hover, .dropdown-item:hover {
                 background-color: rgba(255, 255, 255, 0.1);
                 border-radius: 4px;
-            }
-            .get-more:hover {
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
         }
 
@@ -260,11 +308,17 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
             z-index: -1;
         }
+
+        .error-message {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
         /* 设置默认鼠标指针 */
         body {
-            cursor: url('cur/normal.png'), auto;
+            cursor: url('https://mtdcmz.github.io/blog/cur/normal.png'), auto;
         }
-    </style>
+</style>
 </head>
 <body>
     <nav>
@@ -289,8 +343,15 @@
     </nav>
 
     <main>
-        <div class="poetry" id="poetry">加载中...</div>
-        <a href="https://mtdcmz.github.io/blog/posts.html" class="get-more">GET MORE →</a>
+        <!-- Search Box -->
+        <div class="search-box">
+            <input type="text" class="search-input" id="search-input" placeholder="搜索文章...">
+            <button class="search-button" id="search-button">搜索</button>
+        </div>
+
+        <!-- Post List -->
+        <div class="post-list" id="post-list">加载中...</div>
+        <div class="error-message" id="error-message"></div>
     </main>
 
     <footer>
@@ -300,25 +361,13 @@
 
     <script>
         // Array of background image filenames
-        const backgroundImages = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
+        const backgroundImages = ['https://mtdcmz.github.io/blog/1.jpg', 'https://mtdcmz.github.io/blog/2.jpg', 'https://mtdcmz.github.io/blog/3.jpg', 'https://mtdcmz.github.io/blog/4.jpg', 'https://mtdcmz.github.io/blog/5.jpg'];
 
         // Function to update background
         function updateBackground() {
             const randomIndex = Math.floor(Math.random() * backgroundImages.length);
             const selectedImage = backgroundImages[randomIndex];
             document.body.style.backgroundImage = `url(${selectedImage})`;
-        }
-
-        // Function to update poetry
-        async function updatePoetry() {
-            try {
-                const response = await fetch('https://v1.jinrishici.com/rensheng.txt');
-                const poetry = await response.text();
-                document.getElementById('poetry').textContent = poetry;
-            } catch (error) {
-                console.error('Error fetching poetry:', error);
-                document.getElementById('poetry').textContent = '暂时无法加载诗词';
-            }
         }
 
         // Function to update clock
@@ -337,28 +386,52 @@
             document.getElementById('clock').textContent = now.toLocaleString('zh-CN', options);
         }
 
-        // Function to toggle dropdown on mobile
-        function toggleDropdown(e) {
-            if (window.innerWidth <= 768) {
-                e.preventDefault();
-                const dropdownContent = this.nextElementSibling;
-                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-            }
+        // Fetch post list and render content
+        function loadPostList() {
+            fetch('https://mtdcmz.github.io/blog/post/posts.json')
+                .then(response => response.json())
+                .then(posts => {
+                    if (posts.length > 0) {
+                        const postListHTML = posts.map(post => `
+                            <a href="post/post.html?id=${post.id}" class="post-item">
+                                <div class="post-title">${post.title}</div>
+                                <div class="post-meta">作者: ${post.author} | 日期: ${new Date(post.date).toLocaleDateString()}</div>
+                            </a>
+                        `).join('');
+                        document.getElementById('post-list').innerHTML = postListHTML;
+                    } else {
+                        document.getElementById('post-list').textContent = '没有文章可显示';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading posts:', error);
+                    document.getElementById('post-list').textContent = '加载文章列表失败';
+                });
         }
+
+        // Search function
+        document.getElementById('search-button').addEventListener('click', function() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const posts = document.querySelectorAll('.post-item');
+            posts.forEach(post => {
+                const title = post.querySelector('.post-title').textContent.toLowerCase();
+                const author = post.querySelector('.post-meta').textContent.toLowerCase();
+                if (title.includes(query) || author.includes(query)) {
+                    post.style.display = 'block';
+                } else {
+                    post.style.display = 'none';
+                }
+            });
+        });
 
         // Initial load
         updateBackground();
-        updatePoetry();
+        loadPostList();
         updateClock();
 
         // Set up intervals
         setInterval(updateClock, 1000);
         setInterval(updateBackground, 30000); // Update background every 30 seconds
-        setInterval(updatePoetry, 60000); // Update poetry every minute
-
-        // Add event listener for dropdown toggle
-        document.querySelector('.dropdown > .nav-item').addEventListener('click', toggleDropdown);
     </script>
 </body>
 </html>
-
