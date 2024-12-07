@@ -290,120 +290,122 @@
     </footer>
 
     <script>
-        // Array of background image filenames
-        const backgroundImages = ['https://mtdcmz.github.io/blog/1.jpg', 'https://mtdcmz.github.io/blog/2.jpg', 'https://mtdcmz.github.io/blog/3.jpg', 'https://mtdcmz.github.io/blog/4.jpg', 'https://mtdcmz.github.io/blog/5.jpg'];
+// Array of background image filenames
+const backgroundImages = [
+    'https://mtdcmz.github.io/blog/1.jpg',
+    'https://mtdcmz.github.io/blog/2.jpg',
+    'https://mtdcmz.github.io/blog/3.jpg',
+    'https://mtdcmz.github.io/blog/4.jpg',
+    'https://mtdcmz.github.io/blog/5.jpg'
+];
 
-        // Function to update background
-        function updateBackground() {
-            const randomIndex = Math.floor(Math.random() * backgroundImages.length);
-            const selectedImage = backgroundImages[randomIndex];
-            document.body.style.backgroundImage = `url(${selectedImage})`;
-        }
+// Function to update background
+function updateBackground() {
+    const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+    const selectedImage = backgroundImages[randomIndex];
+    document.body.style.backgroundImage = `url(${selectedImage})`;
+}
 
-        // Function to update clock
-        function updateClock() {
-            const now = new Date();
-            const options = {
-                timeZone: 'Asia/Shanghai',
-                hour12: false,
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
-            document.getElementById('clock').textContent = now.toLocaleString('zh-CN', options);
-        }
+// Function to update clock
+function updateClock() {
+    const now = new Date();
+    const options = {
+        timeZone: 'Asia/Shanghai',
+        hour12: false,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    };
+    document.getElementById('clock').textContent = now.toLocaleString('zh-CN', options);
+}
 
-        // Fetch post data and render content
-        function loadPost() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
-            if (!postId) {
-                document.getElementById('post-content').textContent = '404 Not Found';
-                document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
-                return;
+// Initialize Giscus comments
+function initGiscus(term = "") {
+    const giscusContainer = document.getElementById("giscus-comments");
+    giscusContainer.innerHTML = ""; // 清空现有评论区内容
+
+    const giscusScript = document.createElement("script");
+    giscusScript.src = "https://giscus.app/client.js";
+    giscusScript.dataset.repo = "mtdcmz/blog"; // 替换为你的 GitHub 仓库
+    giscusScript.dataset.repoId = "R_kgDONaOD8A"; // 替换为你的仓库 ID
+    giscusScript.dataset.category = "General"; // 替换为你的 Discussions 分类
+    giscusScript.dataset.categoryId = "General"; // 替换为你的分类 ID
+    giscusScript.dataset.mapping = "specific"; // 使用指定键值映射
+    giscusScript.dataset.term = term; // 动态设置 term
+    giscusScript.dataset.strict = "0";
+    giscusScript.dataset.reactionsEnabled = "1";
+    giscusScript.dataset.emitMetadata = "0";
+    giscusScript.dataset.inputPosition = "bottom";
+    giscusScript.dataset.theme = "preferred_color_scheme";
+    giscusScript.dataset.lang = "zh-CN";
+    giscusScript.setAttribute("crossorigin", "anonymous");
+
+    giscusContainer.appendChild(giscusScript);
+}
+
+// Fetch post data and render content
+function loadPost() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get("id"); // 从 URL 获取文章 ID
+    if (!postId) {
+        document.getElementById("post-content").textContent = "404 Not Found";
+        document.getElementById("error-message").textContent = "这里好像什么都没有 :/";
+        initGiscus(""); // 初始化一个空的评论区
+        return;
+    }
+
+    fetch("posts.json")
+        .then(response => response.json())
+        .then(posts => {
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                document.title = `${post.title} - MTDCMZ's Blog`;
+                const postHeader = `
+                    <h2>${post.title}</h2>
+                    <p>作者: ${post.author} | 日期: ${new Date(post.date).toLocaleDateString("zh-CN")}</p>
+                `;
+                document.getElementById("post-content").innerHTML = postHeader;
+
+                fetch(`md/${postId}.md`)
+                    .then(response => response.text())
+                    .then(markdown => {
+                        if (markdown) {
+                            document.getElementById("post-content").innerHTML += marked.parse(markdown);
+                            initGiscus(post.id); // 使用文章 ID 重新加载评论区
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error loading post:", error);
+                        document.getElementById("post-content").textContent = "404 Not Found";
+                        document.getElementById("error-message").textContent = "这里好像什么都没有 :/";
+                        initGiscus(""); // 初始化一个空的评论区
+                    });
+            } else {
+                document.getElementById("post-content").textContent = "404 Not Found";
+                document.getElementById("error-message").textContent = "没有找到该文章 :/";
+                initGiscus(""); // 初始化一个空的评论区
             }
+        })
+        .catch(error => {
+            console.error("Error loading posts:", error);
+            document.getElementById("post-content").textContent = "404 Not Found";
+            document.getElementById("error-message").textContent = "这里好像什么都没有 :/";
+            initGiscus(""); // 初始化一个空的评论区
+        });
+}
 
-            // Fetch posts data from posts.json
-            fetch('posts.json')
-                .then(response => response.json())
-                .then(posts => {
-                    const post = posts.find(p => p.id == postId);
-                    if (post) {
-                        // Set the page title dynamically
-                        document.title = `${post.title} - MTDCMZ's Blog`;
+// Initial load
+document.addEventListener("DOMContentLoaded", () => {
+    updateBackground();
+    loadPost();
+    updateClock();
 
-                        // Display post metadata
-                        const postHeader = `
-                            <h2>${post.title}</h2>
-                            <p>作者: ${post.author} | 日期: ${new Date(post.date).toLocaleDateString('zh-CN')}</p>
-                        `;
-                        document.getElementById('post-content').innerHTML = postHeader;
-
-                        // Fetch the .md file using the ID
-                        fetch(`md/${postId}.md`)
-                            .then(response => {
-                                if (!response.ok) {
-                                    document.getElementById('post-content').textContent = '404 Not Found';
-                                    document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
-                                    return;
-                                }
-                                return response.text();
-                            })
-                            .then(markdown => {
-                                if (markdown) {
-                                    // Convert markdown to HTML
-                                    document.getElementById('post-content').innerHTML += marked.parse(markdown);
-                                    initGiscus(postId);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error loading post:', error);
-                                document.getElementById('post-content').textContent = '404 Not Found';
-                                document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
-                            });
-                    } else {
-                        document.getElementById('post-content').textContent = '404 Not Found';
-                        document.getElementById('error-message').textContent = '没有找到该文章 :/';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading posts:', error);
-                    document.getElementById('post-content').textContent = '404 Not Found';
-                    document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
-                });
-        }
-
-        // Initialize Giscus comments
-        function initGiscus(postId) {
-            const giscusScript = document.createElement('script');
-            giscusScript.src = "https://giscus.app/client.js";
-            giscusScript.dataset.repo = "mtdcmz/blog";
-            giscusScript.dataset.repoId = "R_kgDONaOD8A";
-            giscusScript.dataset.category = "General";
-            giscusScript.dataset.categoryId = "General";
-            giscusScript.dataset.mapping = "specific";
-            giscusScript.dataset.term = postId;
-            giscusScript.dataset.strict = "0";
-            giscusScript.dataset.reactionsEnabled = "1";
-            giscusScript.dataset.emitMetadata = "0";
-            giscusScript.dataset.inputPosition = "bottom";
-            giscusScript.dataset.theme = "preferred_color_scheme";
-            giscusScript.dataset.lang = "zh-CN";
-            giscusScript.setAttribute('crossorigin', 'anonymous');
-            document.getElementById('giscus-comments').appendChild(giscusScript);
-        }
-
-        // Initial load
-        updateBackground();
-        loadPost();
-        updateClock();
-
-        // Set up intervals
-        setInterval(updateClock, 1000);
-        setInterval(updateBackground, 30000); // Update background every 30 seconds
+    setInterval(updateClock, 1000); // 每秒更新时钟
+    setInterval(updateBackground, 30000); // 每 30 秒更新背景
+});
     </script>
 </body>
 </html>
