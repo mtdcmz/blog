@@ -290,7 +290,7 @@
     </footer>
 
     <script>
-// Array of background image filenames
+// 背景图片数组
 const backgroundImages = [
     'https://mtdcmz.github.io/blog/1.jpg',
     'https://mtdcmz.github.io/blog/2.jpg',
@@ -299,14 +299,14 @@ const backgroundImages = [
     'https://mtdcmz.github.io/blog/5.jpg'
 ];
 
-// Function to update background
+// 更新背景图片
 function updateBackground() {
     const randomIndex = Math.floor(Math.random() * backgroundImages.length);
     const selectedImage = backgroundImages[randomIndex];
     document.body.style.backgroundImage = `url(${selectedImage})`;
 }
 
-// Function to update clock
+// 更新时钟
 function updateClock() {
     const now = new Date();
     const options = {
@@ -322,11 +322,13 @@ function updateClock() {
     document.getElementById('clock').textContent = now.toLocaleString('zh-CN', options);
 }
 
-// Initialize Giscus comments
+// 初始化 Giscus 评论区
 function initGiscus(term = "") {
+    // 清空现有评论区内容
     const giscusContainer = document.getElementById("giscus-comments");
-    giscusContainer.innerHTML = ""; // 清空现有评论区内容
+    giscusContainer.innerHTML = "";
 
+    // 创建 Giscus 脚本
     const giscusScript = document.createElement("script");
     giscusScript.src = "https://giscus.app/client.js";
     giscusScript.dataset.repo = "mtdcmz/blog"; // 替换为你的 GitHub 仓库
@@ -334,7 +336,7 @@ function initGiscus(term = "") {
     giscusScript.dataset.category = "General"; // 替换为你的 Discussions 分类
     giscusScript.dataset.categoryId = "General"; // 替换为你的分类 ID
     giscusScript.dataset.mapping = "specific"; // 使用指定键值映射
-    giscusScript.dataset.term = term; // 动态设置 term
+    giscusScript.dataset.term = term; // 根据文章 ID 设置 term
     giscusScript.dataset.strict = "0";
     giscusScript.dataset.reactionsEnabled = "1";
     giscusScript.dataset.emitMetadata = "0";
@@ -343,10 +345,11 @@ function initGiscus(term = "") {
     giscusScript.dataset.lang = "zh-CN";
     giscusScript.setAttribute("crossorigin", "anonymous");
 
+    // 添加脚本到评论区容器
     giscusContainer.appendChild(giscusScript);
 }
 
-// Fetch post data and render content
+// 加载文章内容
 function loadPost() {
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get("id"); // 从 URL 获取文章 ID
@@ -374,7 +377,7 @@ function loadPost() {
                     .then(markdown => {
                         if (markdown) {
                             document.getElementById("post-content").innerHTML += marked.parse(markdown);
-                            initGiscus(post.id); // 使用文章 ID 重新加载评论区
+                            initGiscus(post.id); // 用文章 ID 重新加载评论区
                         }
                     })
                     .catch(error => {
@@ -397,12 +400,11 @@ function loadPost() {
         });
 }
 
-// Initial load
+// 初始加载
 document.addEventListener("DOMContentLoaded", () => {
     updateBackground();
     loadPost();
     updateClock();
-
     setInterval(updateClock, 1000); // 每秒更新时钟
     setInterval(updateBackground, 30000); // 每 30 秒更新背景
 });
