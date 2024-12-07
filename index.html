@@ -295,15 +295,14 @@
     </footer>
 
     <script>
+        // Array of background image filenames
+        const backgroundImages = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
+
         // Function to update background
-        async function updateBackground() {
-            try {
-                const response = await fetch('https://rpic.origz.com/api.php?category=pixiv');
-                const imageUrl = await response.text();
-                document.body.style.backgroundImage = `url(${imageUrl})`;
-            } catch (error) {
-                console.error('Error fetching background:', error);
-            }
+        function updateBackground() {
+            const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+            const selectedImage = backgroundImages[randomIndex];
+            document.body.style.backgroundImage = `url(${selectedImage})`;
         }
 
         // Function to update poetry
