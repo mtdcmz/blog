@@ -253,7 +253,7 @@
         <a href="#" class="logo">MTDCMZ's Blog</a>
         <div class="nav-links">
             <div class="dropdown">
-                <a href="#" class="nav-item">主页</a>
+                <a href="https://mtdcmz.github.io/blog" class="nav-item">主页</a>
                 <div class="dropdown-content">
                     <a href="https://space.bilibili.com/426046208" class="dropdown-item" target="_blank">
                         <img src="https://ts2.cn.mm.bing.net/th?id=ODLS.e42d2c4d-ad65-4c7a-b0fd-817a1c3bed01" alt="bilibili">
@@ -265,7 +265,7 @@
                     </a>
                 </div>
             </div>
-            <a href="#" class="nav-item">文章</a>
+            <a href="https://mtdcmz.github.io/blog/posts.html" class="nav-item">文章</a>
             <a href="https://mtdcmz.github.io/bvat" class="nav-item">BVAT</a>
         </div>
     </nav>
@@ -319,26 +319,51 @@
                 return;
             }
 
-            // Fetch the .md file using the ID
-            fetch(`md/${postId}.md`)
-                .then(response => {
-                    if (!response.ok) {
+            // Fetch posts data from posts.json
+            fetch('post/posts.json')
+                .then(response => response.json())
+                .then(posts => {
+                    const post = posts.find(p => p.id == postId);
+                    if (post) {
+                        // Set the page title dynamically
+                        document.title = `${post.title} - MTDCMZ's Blog`;
+
+                        // Display post metadata
+                        const postHeader = `
+                            <h2>${post.title}</h2>
+                            <p>作者: ${post.author} | 日期: ${new Date(post.date).toLocaleDateString('zh-CN')}</p>
+                        `;
+                        document.getElementById('post-content').innerHTML = postHeader;
+
+                        // Fetch the .md file using the ID
+                        fetch(`md/${postId}.md`)
+                            .then(response => {
+                                if (!response.ok) {
+                                    document.getElementById('post-content').textContent = '404 Not Found';
+                                    document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
+                                    return;
+                                }
+                                return response.text();
+                            })
+                            .then(markdown => {
+                                if (markdown) {
+                                    // Convert markdown to HTML
+                                    document.getElementById('post-content').innerHTML += marked.parse(markdown);
+                                    initGiscus(postId);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error loading post:', error);
+                                document.getElementById('post-content').textContent = '404 Not Found';
+                                document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
+                            });
+                    } else {
                         document.getElementById('post-content').textContent = '404 Not Found';
-                        document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
-                        return;
-                    }
-                    return response.text();
-                })
-                .then(markdown => {
-                    if (markdown) {
-                        document.title = `${postId} - MTDCMZ's Blog`;
-                        // Convert markdown to HTML (you can use libraries like marked.js here)
-                        document.getElementById('post-content').innerHTML = marked.parse(markdown);
-                        initGiscus(postId);
+                        document.getElementById('error-message').textContent = '没有找到该文章 :/';
                     }
                 })
                 .catch(error => {
-                    console.error('Error loading post:', error);
+                    console.error('Error loading posts:', error);
                     document.getElementById('post-content').textContent = '404 Not Found';
                     document.getElementById('error-message').textContent = '这里好像什么都没有 :/';
                 });
