@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTDCMZ's Blog</title>
+    <link rel="icon" href="favicon.jpg" sizes="16x16" type="image/jpg">
+    <style>
+        :root {
+            --primary-purple: #8B5CF6;
+            --dark-purple: #6D28D9;
+            --light-purple: #A78BFA;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            transition: background-image 1s ease;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--light-purple);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--primary-purple);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:hover {
+            color: var(--light-purple);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            z-index: 1;
+            top: 100%;
+            left: 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-purple);
+        }
+
+        .dropdown-item img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* GitHub icon specific style to make it white */
+        .github-icon {
+            filter: brightness(0) invert(1);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .poetry {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            max-width: 800px;
+            animation: fadeIn 1s ease;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .get-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-purple);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .get-more:hover {
+            background-color: var(--dark-purple);
+            transform: translateX(5px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        #clock {
+            margin-top: 0.5rem;
+            color: var(--light-purple);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            .nav-links {
+                margin-top: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+                justify-content: space-between;
+            }
+            .dropdown-content {
+                position: absolute;
+                left: 0;
+                top: 100%;
+                border-radius: 0 0 8px 8px;
+                width: 100%;
+                display: none;
+            }
+            .dropdown.active .dropdown-content {
+                display: block;
+            }
+            .poetry {
+                font-size: 1.2rem;
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            .logo {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+            .nav-item {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+            .get-more {
+                font-size: 0.9rem;
+                padding: 0.6rem 1.2rem;
+            }
+            footer {
+                font-size: 0.8rem;
+            }
+            #clock {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Smooth Transitions */
+        .nav-item, .dropdown-content, .poetry, .get-more {
+            transition: all 0.3s ease;
+        }
+
+        /* Enhanced Hover Effects */
+        @media (hover: hover) {
+            .nav-item:hover, .dropdown-item:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+            }
+            .get-more:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        /* Enhanced Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">MTDCMZ's Blog</a>
+        <div class="nav-links">
+            <div class="dropdown">
+                <a href="#" class="nav-item">主页</a>
+                <div class="dropdown-content">
+                    <a href="https://space.bilibili.com/426046208" class="dropdown-item" target="_blank">
+                        <img src="https://ts2.cn.mm.bing.net/th?id=ODLS.e42d2c4d-ad65-4c7a-b0fd-817a1c3bed01" alt="bilibili">
+                        Bilibili
+                    </a>
+                    <a href="https://github.com/mtdcmz" class="dropdown-item" target="_blank">
+                        <img src="https://github.githubassets.com/assets/pinned-octocat-093da3e6fa40.svg" alt="GitHub" class="github-icon">
+                        GitHub
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="nav-item">文章</a>
+            <a href="https://mtdcmz.github.io/bvat" class="nav-item">BVAT</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="poetry" id="poetry">加载中...</div>
+        <a href="#" class="get-more">GET MORE →</a>
+    </main>
+
+    <footer>
+        <div>©2024 MTDCMZ</div>
+        <div id="clock"></div>
+    </footer>
+
+    <script>
+        // Function to update background
+        async function updateBackground() {
+            try {
+                const response = await fetch('https://api.miaomc.cn/image/other/360pic');
+                const imageUrl = await response.text();
+                document.body.style.backgroundImage = `url(${imageUrl})`;
+            } catch (error) {
+                console.error('Error fetching background:', error);
+            }
+        }
+
+        // Function to update poetry
+        async function updatePoetry() {
+            try {
+                const response = await fetch('https://v1.jinrishici.com/rensheng.txt');
+                const poetry = await response.text();
+                document.getElementById('poetry').textContent = poetry;
+            } catch (error) {
+                console.error('Error fetching poetry:', error);
+                document.getElementById('poetry').textContent = '暂时无法加载诗词';
+            }
+        }
+
+        // Function to update clock
+        function updateClock() {
+            const now = new Date();
+            const options = {
+                timeZone: 'Asia/Shanghai',
+                hour12: false,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('clock').textContent = now.toLocaleString('zh-CN', options);
+        }
+
+        // Function to toggle dropdown on mobile
+        function toggleDropdown(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                const dropdownContent = this.nextElementSibling;
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        // Initial load
+        updateBackground();
+        updatePoetry();
+        updateClock();
+
+        // Set up intervals
+        setInterval(updateClock, 1000);
+        setInterval(updateBackground, 30000); // Update background every 30 seconds
+        setInterval(updatePoetry, 60000); // Update poetry every minute
+
+        // Add event listener for dropdown toggle
+        document.querySelector('.dropdown > .nav-item').addEventListener('click', toggleDropdown);
+    </script>
+</body>
+</html>
+
