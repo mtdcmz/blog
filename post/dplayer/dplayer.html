@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>DPlayer 播放器</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dplayer/dist/DPlayer.min.js"></script>
+</head>
+<body>
+    <div id="dplayer"></div>
+    <script>
+        // 获取URL中的参数
+        function getQueryVariable(variable) {
+            const query = window.location.search.substring(1);
+            const vars = query.split('&');
+            for (let i = 0; i < vars.length; i++) {
+                const pair = vars[i].split('=');
+                if (decodeURIComponent(pair[0]) === variable) {
+                    return decodeURIComponent(pair[1]);
+                }
+            }
+            return null;
+        }
+
+        // 初始化DPlayer播放器，并使用URL参数作为视频源
+        window.onload = function() {
+            const videoUrl = getQueryVariable('url');
+            if (videoUrl) {
+                const dp = new DPlayer({
+                    container: document.getElementById('dplayer'),
+                    video: {
+                        url: videoUrl, // 使用从URL参数获取的视频链接
+                    },
+                    // 其他DPlayer配置项...
+                });
+            } else {
+                alert('未提供有效的视频链接');
+            }
+        };
+    </script>
+</body>
+</html>
