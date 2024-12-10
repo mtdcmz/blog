@@ -28,11 +28,20 @@
             if (videoUrl) {
                 const dp = new DPlayer({
                     container: document.getElementById('dplayer'),
+                    theme: '#a78bfa',
                     video: {
                         url: videoUrl, // 使用从URL参数获取的视频链接
                     },
+                        contextmenu: [
+        {
+            text: "MTDCMZ's Blog",
+            link: 'https://mtdcmz.github.io/blog',
+        },
+    ],
                     // 其他DPlayer配置项...
                 });
+        // 网页全屏
+        dp.fullScreen.request('web');;
             } else {
                 alert('未提供有效的视频链接');
             }
